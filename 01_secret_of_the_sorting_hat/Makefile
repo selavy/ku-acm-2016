@@ -6,4 +6,4 @@ all:
 	python solution.py < input2.txt > myoutput2.txt
 	@diff myoutput2.txt output2.txt
 clean:
-	rm -rf myoutput1.py myoutput2.py mysample_output.txt
+	rm -rf myoutput1.txt myoutput2.txt mysample_output.txt
