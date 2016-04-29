@@ -9,74 +9,59 @@ Move = namedtuple('Move', ['x', 'y', 'maze', 'gem', 'path'])
 if __name__ == '__main__':
     def is_gem(val):
         return val == 'R' or val == 'E'
-    def go_left(prev):
+    def helper(prev):
         loc = prev.maze[prev.y][prev.x]
         gem = loc if is_gem(loc) else prev.gem
         maze = copy.deepcopy(prev.maze)
         maze[prev.y][prev.x] = 'X'
         path = copy.deepcopy(prev.path)
+        return loc, gem, maze, path
+    def go_left(prev):
+        loc, gem, maze, path = helper(prev)
         path.append([prev.x-1, prev.y])
         return Move(x=prev.x-1, y=prev.y, maze=maze, gem=gem, path=path)
     def go_right(prev):
-        loc = prev.maze[prev.y][prev.x]
-        gem = loc if is_gem(loc) else prev.gem
-        maze = copy.deepcopy(prev.maze)
-        maze[prev.y][prev.x] = 'X'
-        path = copy.deepcopy(prev.path)
+        loc, gem, maze, path = helper(prev)
         path.append([prev.x+1, prev.y])
         return Move(x=prev.x+1, y=prev.y, maze=maze, gem=gem, path=path)
     def go_up(prev):
-        loc = prev.maze[prev.y][prev.x]
-        gem = loc if is_gem(loc) else prev.gem
-        maze = copy.deepcopy(prev.maze)
-        maze[prev.y][prev.x] = 'X'
-        path = copy.deepcopy(prev.path)
+        loc, gem, maze, path = helper(prev)
         path.append([prev.x, prev.y+1])
         return Move(x=prev.x, y=prev.y+1, maze=maze, gem=gem, path=path)
     def go_down(prev):
-        loc = prev.maze[prev.y][prev.x]
-        gem = loc if is_gem(loc) else prev.gem
-        maze = copy.deepcopy(prev.maze)
-        maze[prev.y][prev.x] = 'X'
-        path = copy.deepcopy(prev.path)
+        loc, gem, maze, path = helper(prev)
         path.append([prev.x, prev.y-1])
         return Move(x=prev.x, y=prev.y-1, maze=maze, gem=gem, path=path)
+    def valid(val):
+        return val != '#' and val != 'X'
     def can_go_left(s):
         x = s.x - 1
         y = s.y
         if x < 0:
             return False
-        elif s.maze[y][x] == '#' or s.maze[y][x] == 'X':
-            return False
         val = s.maze[y][x]
-        return not (is_gem(val) and val == s.gem)
+        return valid(val) and not (is_gem(val) and val == s.gem)
     def can_go_right(s):
         x = s.x + 1
         y = s.y
         if x >= max_x:
             return False
-        elif s.maze[y][x] == '#' or s.maze[y][x] == 'X':
-            return False
         val = s.maze[y][x]
-        return not (is_gem(val) and val == s.gem)
+        return valid(val) and not (is_gem(val) and val == s.gem)
     def can_go_up(s):
         x = s.x
         y = s.y + 1
         if y >= max_y:
             return False
-        elif s.maze[y][x] == '#' or s.maze[y][x] == 'X':
-            return False
         val = s.maze[y][x]
-        return not (is_gem(val) and val == s.gem)
+        return valid(val) and not (is_gem(val) and val == s.gem)
     def can_go_down(s):
         x = s.x
         y = s.y - 1
         if y < 0:
             return False
-        elif s.maze[y][x] == '#' or s.maze[y][x] == 'X':
-            return False
         val = s.maze[y][x]
-        return not (is_gem(val) and val == s.gem)
+        return valid(val) and not (is_gem(val) and val == s.gem)
     def is_goal(move):
         return move.x == goal_x and move.y == goal_y
     def pretty_print(move):
