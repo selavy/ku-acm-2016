@@ -1,66 +1,42 @@
 #!/usr/bin/env python
-
 import sys
 import copy
 from collections import namedtuple
-
 if __name__ == '__main__':
     Move = namedtuple('Move', ['x', 'y', 'maze', 'gem'])
-    def is_gem(val):
-        return val in ('R', 'E')
+    def is_gem(val): return val in ('R', 'E')
+    def valid(val): return val != '#' and val != 'X'    
     def helper(prev):
         loc = prev.maze[prev.y][prev.x]
         maze = copy.deepcopy(prev.maze)
         maze[prev.y][prev.x] = 'X'
-        return loc, loc if is_gem(loc) else prev.gem, maze
-    def go_left(prev):
-        loc, gem, maze = helper(prev)
-        return Move(x=prev.x-1, y=prev.y, maze=maze, gem=gem)
-    def go_right(prev):
-        loc, gem, maze = helper(prev)
-        return Move(x=prev.x+1, y=prev.y, maze=maze, gem=gem)
-    def go_up(prev):
-        loc, gem, maze = helper(prev)
-        return Move(x=prev.x, y=prev.y+1, maze=maze, gem=gem)
-    def go_down(prev):
-        loc, gem, maze = helper(prev)
-        return Move(x=prev.x, y=prev.y-1, maze=maze, gem=gem)
-    def valid(val):
-        return val != '#' and val != 'X'
+        return (maze, loc if is_gem(loc) else prev.gem)
+    def go_left(prev): return Move(prev.x-1, prev.y, *helper(prev))
+    def go_right(prev): return Move(prev.x+1, prev.y, *helper(prev))
+    def go_up(prev): return Move(prev.x, prev.y+1, *helper(prev))
+    def go_down(prev): return Move(prev.x, prev.y-1, *helper(prev))
     def can_go_left(s):
-        x = s.x - 1
-        y = s.y
-        if x < 0: return False
-        val = s.maze[y][x]
+        if s.x - 1 < 0: return False
+        val = s.maze[s.y][s.x - 1]
         return valid(val) and not (is_gem(val) and val == s.gem)
     def can_go_right(s):
-        x = s.x + 1
-        y = s.y
-        if x >= max_x: return False
-        val = s.maze[y][x]
+        if s.x + 1 >= max_x: return False
+        val = s.maze[s.y][s.x + 1]
         return valid(val) and not (is_gem(val) and val == s.gem)
     def can_go_up(s):
-        x = s.x
-        y = s.y + 1
-        if y >= max_y: return False
-        val = s.maze[y][x]
+        if s.y + 1 >= max_y: return False
+        val = s.maze[s.y + 1][s.x]
         return valid(val) and not (is_gem(val) and val == s.gem)
     def can_go_down(s):
-        x = s.x
-        y = s.y - 1
-        if y < 0: return False
-        val = s.maze[y][x]
+        if s.y - 1 < 0: return False
+        val = s.maze[s.y - 1][s.x]
         return valid(val) and not (is_gem(val) and val == s.gem)
-    for line in sys.stdin:
-        max_y, max_x = line.rstrip().split()
-        max_x = int(max_x)
-        max_y = int(max_y)
-        break
-    for line in sys.stdin:
-        start_y, start_x = line.rstrip().split() # X and Y position for starting coords are backwards
-        start_x = int(start_x)
-        start_y = int(start_y)
-        break
+    max_y, max_x = sys.stdin.readline().rstrip().split()
+    max_x = int(max_x)
+    max_y = int(max_y)
+    start_y, start_x = sys.stdin.readline().rstrip().split() # X and Y position for starting coords are backwards
+    start_x = int(start_x)
+    start_y = int(start_y)
     maze = []
     for y, line in enumerate(sys.stdin):
         maze.append(list(line.rstrip()))
