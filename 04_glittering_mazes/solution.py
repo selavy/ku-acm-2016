@@ -31,12 +31,8 @@ if __name__ == '__main__':
         if s.y - 1 < 0: return False
         val = s.maze[s.y - 1][s.x]
         return valid(val) and not (is_gem(val) and val == s.gem)
-    max_y, max_x = sys.stdin.readline().rstrip().split()
-    max_x = int(max_x)
-    max_y = int(max_y)
-    start_y, start_x = sys.stdin.readline().rstrip().split() # X and Y position for starting coords are backwards
-    start_x = int(start_x)
-    start_y = int(start_y)
+    max_y, max_x = [int(x) for x in sys.stdin.readline().rstrip().split()]
+    start_y, start_x = [int (x) for x in sys.stdin.readline().rstrip().split()] # X and Y position for starting coords are backwards
     maze = []
     for y, line in enumerate(sys.stdin):
         maze.append(list(line.rstrip()))
